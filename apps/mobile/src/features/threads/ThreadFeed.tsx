@@ -205,6 +205,7 @@ import {
 } from "../../state/assets";
 import { useAtomQueryRunner } from "../../state/use-atom-query-runner";
 import { usePreparedConnection } from "../../state/session";
+import { PearlRewardBadge } from "./PearlRewardBadge";
 import { useLiveThreadLinkLabels } from "../../state/entities";
 import { useThreadSelection } from "../../state/use-thread-selection";
 import { composerDocumentAttachmentRecord } from "../../lib/composerContext";
@@ -1429,6 +1430,13 @@ function renderFeedEntry(
             <MessageAttachmentUnknown key={attachment.id} name={attachment.name} />
           );
         })}
+        {showAssistantMeta && message.projectedItem?.item.runId ? (
+          <PearlRewardBadge
+            environmentId={props.environmentId}
+            threadId={message.projectedItem.item.threadId}
+            runId={message.projectedItem.item.runId}
+          />
+        ) : null}
         {showAssistantMeta ? (
           <View className="mt-1 flex-row items-center gap-1">
             <CopyTextButton

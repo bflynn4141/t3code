@@ -299,6 +299,9 @@ import { SkillChipIcon, SkillInlineText } from "./SkillInlineText";
 import * as DateTime from "effect/DateTime";
 import { formatWorkspaceRelativePath } from "../../filePathDisplay";
 import { forwardWheelToTimeline } from "./timelineMinimapWheel";
+import { PearlRewardChip } from "./PearlRewardChip";
+import type { PearlRunReward } from "@t3tools/client-runtime/pearl";
+import type { PearlNetworkStats } from "@t3tools/contracts";
 import {
   buildReviewCommentRenderablePatch,
   formatReviewCommentFence,
@@ -326,6 +329,9 @@ interface TimelineRowSharedState {
   providerStatuses: ReadonlyArray<ServerProvider>;
   /** Projection runs, for recovering handoff models on legacy items. */
   runs: ReadonlyArray<HandoffTimelineRun>;
+  /** Estimated PRL rewards for finished Pearl runs. */
+  pearlRewards: ReadonlyMap<RunId, PearlRunReward>;
+  pearlNetwork: PearlNetworkStats | null;
   activeThreadEnvironmentId: EnvironmentId;
   onRevertToTurnCount: (targetTurnCount: number, messageId: MessageId) => void;
   onUseArtifactTemplate: (template: CodexArtifactTemplate) => void;
@@ -416,6 +422,7 @@ function TimelineListFooter({
 }
 
 const EMPTY_TIMELINE_SKILLS: ReadonlyArray<Pick<ServerProviderSkill, "name" | "displayName">> = [];
+const EMPTY_PEARL_REWARDS: ReadonlyMap<RunId, PearlRunReward> = new Map();
 const TIMELINE_MAINTAIN_SCROLL_AT_END = {
   animated: false,
   on: {
@@ -515,6 +522,8 @@ interface MessagesTimelineProps {
   skills?: ReadonlyArray<Pick<ServerProviderSkill, "name" | "displayName">>;
   providerStatuses: ReadonlyArray<ServerProvider>;
   runs: ReadonlyArray<HandoffTimelineRun>;
+  pearlRewards?: ReadonlyMap<RunId, PearlRunReward>;
+  pearlNetwork?: PearlNetworkStats | null;
   anchorMessageId: MessageId | null;
   onAnchorReady: (messageId: MessageId, anchorIndex: number) => void;
   onAnchorSizeChanged: (messageId: MessageId, size: number) => void;
@@ -621,6 +630,8 @@ const ConversationTimeline = memo(function ConversationTimeline({
   skills = EMPTY_TIMELINE_SKILLS,
   providerStatuses,
   runs: runsProp,
+  pearlRewards = EMPTY_PEARL_REWARDS,
+  pearlNetwork = null,
   anchorMessageId,
   onAnchorReady,
   onAnchorSizeChanged,
@@ -1361,6 +1372,8 @@ const ConversationTimeline = memo(function ConversationTimeline({
       skills,
       providerStatuses,
       runs,
+      pearlRewards,
+      pearlNetwork,
       activeThreadEnvironmentId,
       onRevertToTurnCount,
       onRunShellCommand,
@@ -1399,6 +1412,8 @@ const ConversationTimeline = memo(function ConversationTimeline({
       skills,
       providerStatuses,
       runs,
+      pearlRewards,
+      pearlNetwork,
       activeThreadEnvironmentId,
       onRevertToTurnCount,
       onRunShellCommand,
@@ -2961,15 +2976,17 @@ function AssistantMessageMeta({
   alwaysVisible?: boolean;
 }) {
   const ctx = use(TimelineRowCtx);
+  const pearlReward =
+    message.runId && !message.streaming ? ctx.pearlRewards.get(message.runId) : undefined;
 
-  return (
+  const meta = (
     <div
       className={cn(
         "flex items-center gap-2 text-xs tabular-nums transition-opacity duration-200",
         alwaysVisible
           ? "opacity-100"
           : "opacity-0 pointer-coarse:opacity-100 focus-within:opacity-100 group-hover/assistant:opacity-100",
-        className,
+        pearlReward ? null : className,
       )}
     >
       {projectedItem && projectedItem.item.status !== "completed" ? (
@@ -2995,6 +3012,14 @@ function AssistantMessageMeta({
           </TooltipPopup>
         </Tooltip>
       )}
+    </div>
+  );
+  if (!pearlReward || !ctx.pearlNetwork) return meta;
+  // The reward stays visible; the copy and fork controls keep their hover reveal.
+  return (
+    <div className={cn("flex items-center gap-1", className)}>
+      <PearlRewardChip reward={pearlReward} network={ctx.pearlNetwork} />
+      {meta}
     </div>
   );
 }

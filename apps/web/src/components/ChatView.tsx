@@ -612,6 +612,9 @@ import { useAssetUrls } from "../assets/assetUrls";
 import { ATTACHMENT_ONLY_BOOTSTRAP_PROMPT } from "@t3tools/shared/composerContextReferences";
 import { recallableComposerPrompt } from "./chat/composerPromptHistory";
 import { observeResize } from "~/lib/observeResize";
+import { usePearlNetwork } from "~/lib/pearlNetwork";
+import { pearlRewardsByRun } from "@t3tools/client-runtime/pearl";
+import { pearlModelForSlug } from "@t3tools/contracts";
 
 const EMPTY_PROVIDERS: ServerProvider[] = [];
 const EMPTY_PROVIDER_MODELS: ServerProvider["models"] = [];
@@ -1724,6 +1727,18 @@ export default function ChatView(props: ChatViewProps) {
   const threadDetailLoading = threadSyncPhase === "loading";
   // Latest provider-reported context usage (#8144): the newest report wins;
   // stale turns keep the meter alive between turns.
+  const hasPearlRuns = useMemo(
+    () => (serverProjection?.runs ?? []).some((run) => pearlModelForSlug(run.modelSelection.model)),
+    [serverProjection?.runs],
+  );
+  const pearlNetwork = usePearlNetwork(hasPearlRuns);
+  const pearlRewards = useMemo(
+    () =>
+      serverProjection && hasPearlRuns
+        ? pearlRewardsByRun(serverProjection, pearlNetwork)
+        : undefined,
+    [serverProjection, hasPearlRuns, pearlNetwork],
+  );
   const activeThreadLiveTokenUsage = useMemo(
     () => latestProviderTurnTokenUsage(serverProjection?.providerTurns ?? []),
     [serverProjection?.providerTurns],
@@ -11572,6 +11587,9 @@ export default function ChatView(props: ChatViewProps) {
                   )?.serverConfig?.providers ?? EMPTY_PROVIDERS
                 }
                 runs={paintOnlyDisplayedTimeline ? [] : (serverProjection?.runs ?? [])}
+                {...(pearlRewards && !paintOnlyDisplayedTimeline
+                  ? { pearlRewards, pearlNetwork }
+                  : {})}
                 latestRun={paintOnlyDisplayedTimeline ? null : activeActivityRun}
                 runningRunId={paintOnlyDisplayedTimeline ? null : activeRunningTurnId}
                 turnDiffSummaries={

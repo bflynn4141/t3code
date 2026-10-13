@@ -55,6 +55,7 @@ import {
   OrchestrationV2ThreadDetailSnapshot,
   OrchestrationV2ThreadHistoryPage,
 } from "./orchestrationV2.ts";
+import { PearlNetworkStats } from "./pearl.ts";
 import { Project, ProjectMutation, ProjectSnapshot } from "./project.ts";
 import {
   PullRequestDiffInput,
@@ -452,6 +453,13 @@ class EnvironmentMetadataHttpApi extends HttpApiGroup.make("metadata").add(
   }),
 ) {}
 
+/** Public Pearl network readings for PRL reward estimates. Nothing environment-specific. */
+class EnvironmentPearlHttpApi extends HttpApiGroup.make("pearl").add(
+  HttpApiEndpoint.get("network", "/api/pearl/network", {
+    success: PearlNetworkStats,
+  }),
+) {}
+
 class EnvironmentAuthHttpApi extends HttpApiGroup.make("auth")
   .add(
     HttpApiEndpoint.get("session", "/api/auth/session", {
@@ -760,6 +768,7 @@ class EnvironmentWebhooksHttpApi extends HttpApiGroup.make("webhooks")
 
 export class EnvironmentHttpApi extends HttpApi.make("environment")
   .add(EnvironmentMetadataHttpApi)
+  .add(EnvironmentPearlHttpApi)
   .add(EnvironmentAuthHttpApi)
   .add(EnvironmentMcpOAuthHttpApi)
   .add(EnvironmentOrchestrationHttpApi)

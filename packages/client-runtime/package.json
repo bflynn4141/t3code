@@ -414,6 +414,10 @@
     "./pull-request-markdown": {
       "types": "./src/pullRequestMarkdown.ts",
       "default": "./src/pullRequestMarkdown.ts"
+    },
+    "./pearl": {
+      "types": "./src/pearl/rewards.ts",
+      "default": "./src/pearl/rewards.ts"
     }
   },
   "scripts": {

@@ -91,6 +91,7 @@ import { Toggle, ToggleGroup } from "../ui/toggle-group";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { AddProviderInstanceDialog } from "./AddProviderInstanceDialog";
+import { PEARL_INSTANCE_ID, PearlConnectSection } from "./PearlConnectSection";
 import { ExpandableText } from "./ExpandableText";
 import { ProviderInstanceCard } from "./ProviderInstanceCard";
 import { UsageProviderSettings } from "./UsageProviderSettings";
@@ -1132,6 +1133,11 @@ export function EnvironmentProviderSettings({
 
   return (
     <>
+      <PearlConnectSection
+        environmentId={environmentId}
+        connected={settings.providerInstances?.[PEARL_INSTANCE_ID] !== undefined}
+        readOnly={readOnly}
+      />
       <SettingsSection
         {...searchableSetting("providers")}
         variant="plain"

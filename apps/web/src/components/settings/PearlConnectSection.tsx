@@ -91,7 +91,7 @@ export function PearlConnectSection({
         description={
           connected
             ? `${PEARL_MODELS.length} Pearl models are in your model picker. Each reply shows the PRL its work mined.`
-            : "Pearl's GPUs mine PRL with the same math that answers your prompts. Connect a key from platform.pearlresearch.ai to use its models here and see what each prompt earns. New accounts get $5 of credit."
+            : "Pearl's GPUs mine PRL with the same math that answers your prompts. Connect a Pearl API key to use its models here and see what each prompt earns. Access is by waitlist at platform.pearlresearch.ai."
         }
         control={
           readOnly ? null : editing ? (

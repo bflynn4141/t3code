@@ -7,8 +7,8 @@ T3 Code shows an estimate of the PRL each Pearl reply mined.
 ## Connect
 
 1. Install OpenCode (`npm install -g opencode-ai`). T3 Code runs Pearl models through it.
-2. Create a key at [platform.pearlresearch.ai](https://platform.pearlresearch.ai). New
-   accounts get $5 of credit.
+2. Create a key at [platform.pearlresearch.ai](https://platform.pearlresearch.ai). Access is
+   by waitlist for now.
 3. In **Settings > Providers**, paste the key under **Pearl** and choose **Connect**.
 
 Pearl's models then appear in the model picker under the Pearl instance. The key is stored

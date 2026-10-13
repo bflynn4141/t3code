@@ -1,0 +1,33 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sk-sq" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5BEDA3"/>
+      <stop offset="0.5" stop-color="#17BD69"/>
+      <stop offset="1" stop-color="#0A7A44"/>
+    </linearGradient>
+    <linearGradient id="sk-nacre" x1="0.1" y1="0.05" x2="0.9" y2="0.95">
+      <stop offset="0" stop-color="#FF9ECF"/>
+      <stop offset="0.22" stop-color="#FFD08A"/>
+      <stop offset="0.42" stop-color="#FFF39A"/>
+      <stop offset="0.6" stop-color="#9EF2C4"/>
+      <stop offset="0.8" stop-color="#8FD0FF"/>
+      <stop offset="1" stop-color="#C6A4FF"/>
+    </linearGradient>
+    <radialGradient id="sk-shine" cx="0.34" cy="0.3" r="0.6">
+      <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+      <stop offset="0.28" stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sk-rim" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.72" stop-color="#0A3D24" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0A3D24" stop-opacity="0.32"/>
+    </radialGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#sk-sq)"/>
+  <path d="M2 19 Q2 2 19 2 H45 Q62 2 62 19 V23 Q32 33 2 23 Z" fill="#fff" opacity="0.2"/>
+  <path d="M9 38 C14 52 50 54 55 38 C44 44 20 44 9 38 Z" fill="#fff"/>
+  <path d="M10 35 C9 20 26 9 47 11 C42 16 38 22 36 28 C27 30 18 32 10 35 Z" fill="#fff"/>
+  <circle cx="35" cy="37" r="10.5" fill="url(#sk-nacre)"/>
+  <circle cx="35" cy="37" r="10.5" fill="url(#sk-rim)"/>
+  <circle cx="35" cy="37" r="10.5" fill="url(#sk-shine)"/>
+</svg>

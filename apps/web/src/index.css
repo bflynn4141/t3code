@@ -495,6 +495,39 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
 
 /* Stage-channel art needs a mask and pseudo-element gradient, so keep the
    behavior composable without tying it to the global components layer. */
+/* Shucks pearls: the only rainbow in the interface, reserved for rewards. */
+@utility pearl-gloss {
+  border-radius: 9999px;
+  background:
+    radial-gradient(
+      circle at 34% 28%,
+      #fff 0 12%,
+      rgb(255 255 255 / 0.35) 26%,
+      rgb(255 255 255 / 0) 46%
+    ),
+    radial-gradient(circle at 50% 50%, rgb(10 61 36 / 0) 66%, rgb(10 61 36 / 0.28) 100%),
+    conic-gradient(from 210deg, #ff9ecf, #ffd08a, #fff39a, #9ef2c4, #8fd0ff, #c6a4ff, #ff9ecf);
+  box-shadow:
+    0 1px 2px rgb(10 61 36 / 0.25),
+    0 0 8px rgb(143 208 255 / 0.35);
+}
+
+@utility pearl-chip {
+  border: 1px solid rgb(11 130 73 / 0.28);
+  background: linear-gradient(180deg, #f1fbf5, #e2f6ea);
+  color: #0a5a33;
+
+  &:hover {
+    border-color: rgb(11 130 73 / 0.45);
+  }
+
+  @variant dark {
+    border-color: rgb(91 237 163 / 0.35);
+    background: linear-gradient(180deg, rgb(23 189 105 / 0.2), rgb(23 189 105 / 0.1));
+    color: #9ef2c4;
+  }
+}
+
 @utility sidebar-stage-backdrop {
   --stage-fade: var(--sidebar-stage-fade, var(--app-chrome-background));
   mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 92%);
@@ -647,6 +680,20 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
     background-color: color-mix(in oklab, var(--primary) 45%, transparent);
   }
   :root {
+    /* Shucks brand pigments (mark, header band, pearls). Fixed across themes. */
+    --shucks-tile-top: #5beda3;
+    --shucks-jade: #17bd69;
+    --shucks-kelp-deep: #0a7a44;
+    --shucks-kelp-mid: #11a35b;
+    --shucks-mint-bright: #3fdb8c;
+    --shucks-mint-light: #b9fad5;
+    --shucks-mint: #7df5b0;
+    --nacre-rose: #ff9ecf;
+    --nacre-peach: #ffd08a;
+    --nacre-lemon: #fff39a;
+    --nacre-mint: #9ef2c4;
+    --nacre-sky: #8fd0ff;
+    --nacre-lilac: #c6a4ff;
     /* Keep the original T3 Code artwork palettes as the defaults. Built-in
        themes override them with their own pigments in the components layer. */
     --stage-art-top: oklch(0.782169 0.123386 240.226);
@@ -1101,7 +1148,7 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
   --card-foreground: var(--color-zinc-800);
   --popover: var(--color-white);
   --popover-foreground: var(--color-zinc-800);
-  --primary: oklch(0.488 0.217 264);
+  --primary: #0b8249; /* Shucks kelp */
   --primary-foreground: var(--color-white);
   --secondary: var(--color-zinc-50);
   --secondary-foreground: var(--color-zinc-800);
@@ -1165,7 +1212,7 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
     --card-foreground: var(--color-neutral-100);
     --popover: color-mix(in srgb, var(--background) 97%, var(--color-white));
     --popover-foreground: var(--color-neutral-100);
-    --primary: oklch(0.571 0.21 264);
+    --primary: #0e8048; /* Shucks kelp, dark */
     --secondary: --alpha(var(--color-white) / 3%);
     --secondary-foreground: var(--color-neutral-100);
     --muted: --alpha(var(--color-white) / 3%);

@@ -5,7 +5,7 @@ import { APP_STAGE_LABEL } from "../branding";
 import { resolveServerBackedAppStageLabel } from "../branding.logic";
 import { primaryServerConfigAtom } from "../state/server";
 
-export type SidebarStageBackdropVariant = "nightly" | "dev";
+export type SidebarStageBackdropVariant = "nightly" | "shucks";
 export type EnvironmentIdentificationPillLabel = "Dev" | "Nightly";
 
 // A wide viewBox keeps the 96-unit art height at a fixed scale while sidebar resizing reveals
@@ -17,10 +17,8 @@ export function resolveSidebarStageBackdropVariant(
   enabled = true,
 ): SidebarStageBackdropVariant | null {
   if (!enabled) return null;
-  const normalized = stageLabel.trim().toLowerCase();
-  if (normalized === "nightly") return "nightly";
-  if (normalized === "dev") return "dev";
-  return null;
+  // Nightly keeps its sky; every other build wears the Shucks band.
+  return stageLabel.trim().toLowerCase() === "nightly" ? "nightly" : "shucks";
 }
 
 export function resolveEnvironmentIdentificationPillLabel(
@@ -59,11 +57,11 @@ export function SidebarStageBackdrop({ variant }: { variant: SidebarStageBackdro
 }
 
 export function StageBackdropArt({ variant }: { variant: SidebarStageBackdropVariant }) {
-  return variant === "nightly" ? <NightlySkyArt /> : <DevBlueprintArt />;
+  return variant === "nightly" ? <NightlySkyArt /> : <ShucksArt />;
 }
 
 export function StageBackdropButtonArt({ variant }: { variant: SidebarStageBackdropVariant }) {
-  return variant === "nightly" ? <NightlySkyArt compact /> : <DevBlueprintArt compact />;
+  return variant === "nightly" ? <NightlySkyArt compact /> : <ShucksArt compact />;
 }
 
 const NIGHTLY_STARS: ReadonlyArray<{
@@ -209,21 +207,29 @@ function NightlySkyArt({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function DevBlueprintArt({ compact = false }: { compact?: boolean }) {
+// Glossy kelp-to-mint band with a few nacre pearls, the Shucks header. Brand colors are fixed rather
+// than theme-driven so the mark reads the same under every theme.
+const SHUCKS_PEARLS: ReadonlyArray<{ cx: number; cy: number; r: number }> = [
+  { cx: 196, cy: 26, r: 8 },
+  { cx: 262, cy: 58, r: 5 },
+  { cx: 344, cy: 30, r: 11 },
+  { cx: 452, cy: 56, r: 6.5 },
+  { cx: 540, cy: 24, r: 5 },
+  { cx: 626, cy: 50, r: 9 },
+];
+
+function ShucksArt({ compact = false }: { compact?: boolean }) {
   const idPrefix = useId().replaceAll(":", "");
-  const paperId = `${idPrefix}-stage-bp-paper`;
-  const glowId = `${idPrefix}-stage-bp-glow`;
-  const celesteGlowId = `${idPrefix}-stage-bp-glow-celeste`;
-  const violetGlowId = `${idPrefix}-stage-bp-glow-violet`;
-  const minorGridId = `${idPrefix}-stage-bp-grid-minor`;
-  const majorGridId = `${idPrefix}-stage-bp-grid-major`;
-  const rulerId = `${idPrefix}-stage-bp-ruler`;
-  const glowsId = `${idPrefix}-stage-bp-glows`;
-  const annotationsId = `${idPrefix}-stage-bp-annotations`;
+  const baseId = `${idPrefix}-stage-shucks-base`;
+  const glossId = `${idPrefix}-stage-shucks-gloss`;
+  const glowId = `${idPrefix}-stage-shucks-glow`;
+  const nacreId = `${idPrefix}-stage-shucks-nacre`;
+  const shineId = `${idPrefix}-stage-shucks-shine`;
+  const pearlsId = `${idPrefix}-stage-shucks-pearls`;
 
   return (
     <svg
-      data-stage-art="blueprint"
+      data-stage-art="shucks"
       className="h-full w-full"
       fill="none"
       preserveAspectRatio="xMinYMin slice"
@@ -232,160 +238,60 @@ function DevBlueprintArt({ compact = false }: { compact?: boolean }) {
     >
       <defs>
         <linearGradient
-          id={paperId}
-          x1="60"
+          id={baseId}
+          x1="0"
           y1="0"
-          x2="220"
+          x2="720"
           y2="96"
           gradientUnits="userSpaceOnUse"
           spreadMethod="reflect"
         >
-          <stop style={{ stopColor: "var(--stage-art-bottom)" }} />
-          <stop offset="0.5" style={{ stopColor: "var(--stage-art-mid)" }} />
-          <stop offset="1" style={{ stopColor: "var(--stage-art-top)" }} />
+          <stop style={{ stopColor: "var(--shucks-kelp-deep)" }} />
+          <stop offset="0.45" style={{ stopColor: "var(--shucks-kelp-mid)" }} />
+          <stop offset="1" style={{ stopColor: "var(--shucks-mint-bright)" }} />
+        </linearGradient>
+        <linearGradient id={glossId} x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
+          <stop style={{ stopColor: "var(--color-white)" }} stopOpacity="0.32" />
+          <stop offset="1" style={{ stopColor: "var(--color-white)" }} stopOpacity="0" />
         </linearGradient>
         <radialGradient
           id={glowId}
           cx="0"
           cy="0"
           r="1"
-          gradientTransform="translate(216 14) rotate(137) scale(120 84)"
+          gradientTransform="translate(420 18) rotate(160) scale(240 70)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop style={{ stopColor: "var(--stage-art-highlight)" }} stopOpacity="0.4" />
-          <stop
-            offset="0.52"
-            style={{ stopColor: "var(--stage-art-secondary)" }}
-            stopOpacity="0.16"
-          />
-          <stop offset="1" style={{ stopColor: "var(--stage-art-bottom)" }} stopOpacity="0" />
+          <stop style={{ stopColor: "var(--shucks-mint-light)" }} stopOpacity="0.55" />
+          <stop offset="1" style={{ stopColor: "var(--shucks-mint)" }} stopOpacity="0" />
         </radialGradient>
-        <radialGradient
-          id={celesteGlowId}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientTransform="translate(474 44) rotate(166) scale(156 92)"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop style={{ stopColor: "var(--stage-art-celeste-highlight)" }} stopOpacity="0.34" />
-          <stop
-            offset="0.5"
-            style={{ stopColor: "var(--stage-art-celeste-secondary)" }}
-            stopOpacity="0.18"
-          />
-          <stop offset="1" style={{ stopColor: "var(--stage-art-bottom)" }} stopOpacity="0" />
+        <linearGradient id={nacreId} x1="0.1" y1="0.05" x2="0.9" y2="0.95">
+          <stop style={{ stopColor: "var(--nacre-rose)" }} />
+          <stop offset="0.22" style={{ stopColor: "var(--nacre-peach)" }} />
+          <stop offset="0.42" style={{ stopColor: "var(--nacre-lemon)" }} />
+          <stop offset="0.6" style={{ stopColor: "var(--nacre-mint)" }} />
+          <stop offset="0.8" style={{ stopColor: "var(--nacre-sky)" }} />
+          <stop offset="1" style={{ stopColor: "var(--nacre-lilac)" }} />
+        </linearGradient>
+        <radialGradient id={shineId} cx="0.34" cy="0.3" r="0.6">
+          <stop style={{ stopColor: "var(--color-white)" }} />
+          <stop offset="0.3" style={{ stopColor: "var(--color-white)" }} stopOpacity="0.35" />
+          <stop offset="1" style={{ stopColor: "var(--color-white)" }} stopOpacity="0" />
         </radialGradient>
-        <radialGradient
-          id={violetGlowId}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientTransform="translate(704 18) rotate(145) scale(132 88)"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop style={{ stopColor: "var(--stage-art-violet-highlight)" }} stopOpacity="0.3" />
-          <stop
-            offset="0.52"
-            style={{ stopColor: "var(--stage-art-tertiary)" }}
-            stopOpacity="0.14"
-          />
-          <stop offset="1" style={{ stopColor: "var(--stage-art-bottom)" }} stopOpacity="0" />
-        </radialGradient>
-        <pattern id={minorGridId} width="8" height="8" patternUnits="userSpaceOnUse">
-          <path
-            d="M8 0H0V8"
-            style={{ stroke: "var(--stage-art-grid-line)" }}
-            strokeOpacity="0.14"
-            strokeWidth="0.5"
-          />
-        </pattern>
-        <pattern id={majorGridId} width="32" height="32" patternUnits="userSpaceOnUse">
-          <path
-            d="M32 0H0V32"
-            style={{ stroke: "var(--stage-art-grid-line)" }}
-            strokeOpacity="0.26"
-            strokeWidth="0.6"
-          />
-        </pattern>
-        <pattern id={rulerId} width="32" height="6" patternUnits="userSpaceOnUse">
-          <path
-            d="M4 0V2.5M12 0V2.5M20 0V4M28 0V2.5"
-            style={{ stroke: "var(--stage-art-line)" }}
-            strokeOpacity="0.5"
-            strokeWidth="0.5"
-          />
-        </pattern>
-        <pattern id={glowsId} width="768" height="96" patternUnits="userSpaceOnUse">
-          <rect width="768" height="96" fill={`url(#${glowId})`} />
-          <rect width="768" height="96" fill={`url(#${celesteGlowId})`} />
-          <rect width="768" height="96" fill={`url(#${violetGlowId})`} />
-        </pattern>
-        <pattern id={annotationsId} width="768" height="96" patternUnits="userSpaceOnUse">
-          <g
-            style={{ stroke: "var(--stage-art-line)" }}
-            strokeLinecap="round"
-            strokeOpacity="0.6"
-            strokeWidth="0.7"
-          >
-            <path d="M180 64H264" strokeDasharray="5 4" />
-            <path d="M180 61V67M264 61V67" />
-            <path d="M276 10V44" strokeDasharray="4 4" strokeOpacity="0.5" />
-            <path d="M273 10H279M273 44H279" strokeOpacity="0.5" />
-            <path d="M348 30H428" strokeDasharray="3.5 5" strokeOpacity="0.5" />
-            <path d="M348 27V33M428 27V33" strokeOpacity="0.5" />
-            <path d="M512 48V80" strokeDasharray="5 3" strokeOpacity="0.45" />
-            <path d="M509 48H515M509 80H515" strokeOpacity="0.45" />
-            <path d="M590 70H724" strokeDasharray="7 4" strokeOpacity="0.55" />
-            <path d="M590 67V73M724 67V73" strokeOpacity="0.55" />
-          </g>
-
-          <g
-            style={{ stroke: "var(--stage-art-line)" }}
-            strokeLinecap="round"
-            strokeOpacity="0.55"
-            strokeWidth="0.6"
-          >
-            <g>
-              <path d="M34 60L38 64M38 60L34 64" />
+        <pattern id={pearlsId} width="720" height="96" patternUnits="userSpaceOnUse">
+          {SHUCKS_PEARLS.map((pearl) => (
+            <g key={`${pearl.cx}-${pearl.cy}`}>
+              <circle cx={pearl.cx} cy={pearl.cy} r={pearl.r} fill={`url(#${nacreId})`} />
+              <circle cx={pearl.cx} cy={pearl.cy} r={pearl.r} fill={`url(#${shineId})`} />
             </g>
-            <g>
-              <path d="M228 26H234M231 23V29" />
-            </g>
-            <g>
-              <path d="M143 51H149M146 48V54" />
-            </g>
-            <g>
-              <path d="M316 16L322 22M322 16L316 22" />
-            </g>
-            <g>
-              <path d="M468 70H476M472 66V74" />
-            </g>
-            <g>
-              <path d="M558 28L564 34M564 28L558 34" />
-            </g>
-            <g>
-              <path d="M742 44H750M746 40V48" />
-            </g>
-          </g>
-
-          <g style={{ stroke: "var(--stage-art-line)" }} strokeOpacity="0.35" strokeWidth="0.6">
-            <circle cx="196" cy="38" r="13" strokeDasharray="3.5 4" />
-            <path d="M196 33V43M191 38H201" strokeOpacity="0.6" strokeWidth="0.4" />
-            <circle cx="414" cy="64" r="10" strokeDasharray="2.5 3.5" />
-            <path d="M414 60V68M410 64H418" strokeOpacity="0.6" strokeWidth="0.4" />
-            <circle cx="648" cy="32" r="15" strokeDasharray="4 5" />
-            <path d="M648 26V38M642 32H654" strokeOpacity="0.6" strokeWidth="0.4" />
-          </g>
+          ))}
         </pattern>
       </defs>
 
-      <rect width="100%" height="96" fill={`url(#${paperId})`} />
-      <rect width="100%" height="96" fill={`url(#${glowsId})`} />
-      <rect width="100%" height="96" fill={`url(#${minorGridId})`} />
-      <rect width="100%" height="96" fill={`url(#${majorGridId})`} />
-      <rect width="100%" height="6" fill={`url(#${rulerId})`} />
-      <rect width="100%" height="96" fill={`url(#${annotationsId})`} />
+      <rect width="100%" height="96" fill={`url(#${baseId})`} />
+      <rect width="100%" height="96" fill={`url(#${glowId})`} />
+      <rect width="100%" height="40" fill={`url(#${glossId})`} />
+      <rect width="100%" height="96" fill={`url(#${pearlsId})`} />
     </svg>
   );
 }

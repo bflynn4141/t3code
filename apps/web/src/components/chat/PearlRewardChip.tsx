@@ -10,24 +10,12 @@ import {
   type PearlRunReward,
 } from "@t3tools/client-runtime/pearl";
 
+import { cn } from "~/lib/utils";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 
-/** A small lit pearl: ivory body, soft shadow side, and a faint nacre sheen. */
+/** A glossy nacre pearl, the Shucks reward mark. */
 function PearlDot({ className }: { className?: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={className}
-      style={{
-        borderRadius: "9999px",
-        background:
-          "radial-gradient(circle at 34% 30%, #fff 0 12%, transparent 34%)," +
-          "radial-gradient(circle at 70% 78%, rgb(176 168 196 / 0.55), transparent 60%)," +
-          "conic-gradient(from 210deg, #efe6df, #e1e9e6, #e8e2ee, #f4eddf, #efe6df)",
-        boxShadow: "inset -1px -1.5px 2px rgb(70 60 80 / 0.28), 0 0 0 0.5px rgb(0 0 0 / 0.12)",
-      }}
-    />
-  );
+  return <span aria-hidden="true" className={cn("pearl-gloss inline-block", className)} />;
 }
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -58,15 +46,14 @@ export function PearlRewardChip({
         render={
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-full px-1.5 py-0.5 text-muted-foreground text-xs tabular-nums hover:bg-accent/60 hover:text-foreground"
-            aria-label={`Estimated Pearl reward: ${formatGrains(reward.grains)} grains`}
+            className="pearl-chip inline-flex items-center gap-1.5 rounded-full py-0.5 pr-2.5 pl-1 text-xs tabular-nums outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+            aria-label={`Estimated reward: ${formatGrains(reward.grains)} grains, about ${formatSmallUsd(reward.usd)}`}
           >
-            <PearlDot className="size-2.5 shrink-0" />
-            <span>{formatGrains(reward.grains)} grains</span>
+            <PearlDot className="size-3.5 shrink-0" />
+            <span className="font-semibold">{formatGrains(reward.grains)} grains</span>
+            <span className="opacity-60">{formatSmallUsd(reward.usd)}</span>
             {reward.durationMs !== null ? (
-              <span className="text-muted-foreground/70">
-                · {formatDuration(reward.durationMs)}
-              </span>
+              <span className="opacity-45">· {formatDuration(reward.durationMs)}</span>
             ) : null}
           </button>
         }
@@ -81,11 +68,11 @@ export function PearlRewardChip({
       >
         <div className="flex flex-col gap-2 p-(--floating-content-inset)">
           <div className="flex items-center justify-between gap-3">
-            <div className="font-medium text-muted-foreground text-xs">Pearl reward</div>
+            <div className="font-medium text-muted-foreground text-xs">Your pearl</div>
             <div className="text-secondary-label text-2xs">Estimate</div>
           </div>
           <div className="flex items-center gap-2">
-            <PearlDot className="size-5 shrink-0" />
+            <PearlDot className="size-7 shrink-0" />
             <div className="flex flex-col">
               <span className="font-medium text-sm tabular-nums">
                 {formatGrains(reward.grains)} grains

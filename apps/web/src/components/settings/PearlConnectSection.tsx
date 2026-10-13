@@ -49,6 +49,8 @@ export function PearlConnectSection({
   const [apiKey, setApiKey] = useState("");
   const [replacing, setReplacing] = useState(false);
   const [saving, setSaving] = useState(false);
+  // Disconnecting deletes the stored key, so it takes a second, explicit click.
+  const [confirmingDisconnect, setConfirmingDisconnect] = useState(false);
   const editing = !connected || replacing;
 
   const save = async (mutation: Parameters<typeof persist>[0], success: string) => {
@@ -87,7 +89,7 @@ export function PearlConnectSection({
   return (
     <SettingsSection title="Pearl">
       <SettingsRow
-        title={connected ? "Earning PRL on every prompt" : "Earn PRL on every prompt"}
+        title={connected ? "Earning pearls on every prompt" : "Earn pearls on every prompt"}
         description={
           connected
             ? `${PEARL_MODELS.length} Pearl models are in your model picker. Each reply shows the PRL its work mined.`
@@ -104,6 +106,7 @@ export function PearlConnectSection({
             >
               <Input
                 type="password"
+                name="pearl-api-key"
                 autoComplete="off"
                 spellCheck={false}
                 placeholder="sk-prl-infapi-…"
@@ -126,8 +129,21 @@ export function PearlConnectSection({
               <Button size="sm" variant="outline" onClick={() => setReplacing(true)}>
                 Replace key
               </Button>
-              <Button size="sm" variant="ghost" disabled={saving} onClick={() => void disconnect()}>
-                Disconnect
+              <Button
+                size="sm"
+                variant={confirmingDisconnect ? "destructive-outline" : "ghost"}
+                disabled={saving}
+                onBlur={() => setConfirmingDisconnect(false)}
+                onClick={() => {
+                  if (!confirmingDisconnect) {
+                    setConfirmingDisconnect(true);
+                    return;
+                  }
+                  setConfirmingDisconnect(false);
+                  void disconnect();
+                }}
+              >
+                {confirmingDisconnect ? "Confirm disconnect" : "Disconnect"}
               </Button>
             </div>
           )

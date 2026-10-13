@@ -20,7 +20,7 @@ import {
 import * as Option from "effect/Option";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { Pressable, View } from "react-native";
-import Svg, { Circle, Defs, RadialGradient, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient, RadialGradient, Stop } from "react-native-svg";
 
 import { AppText as Text } from "../../components/AppText";
 import { usePreparedConnection } from "../../state/session";
@@ -49,14 +49,22 @@ function PearlDot({ size }: { size: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 20 20">
       <Defs>
-        <RadialGradient id="pearl-body" cx="38%" cy="34%" r="70%">
-          <Stop offset="0" stopColor="#ffffff" />
-          <Stop offset="0.45" stopColor="#f1ebe3" />
-          <Stop offset="0.8" stopColor="#d9d3df" />
-          <Stop offset="1" stopColor="#b9b2c4" />
+        <LinearGradient id="pearl-nacre" x1="0.1" y1="0.05" x2="0.9" y2="0.95">
+          <Stop offset="0" stopColor="#FF9ECF" />
+          <Stop offset="0.22" stopColor="#FFD08A" />
+          <Stop offset="0.42" stopColor="#FFF39A" />
+          <Stop offset="0.6" stopColor="#9EF2C4" />
+          <Stop offset="0.8" stopColor="#8FD0FF" />
+          <Stop offset="1" stopColor="#C6A4FF" />
+        </LinearGradient>
+        <RadialGradient id="pearl-shine" cx="34%" cy="30%" r="60%">
+          <Stop offset="0" stopColor="#ffffff" stopOpacity="1" />
+          <Stop offset="0.3" stopColor="#ffffff" stopOpacity="0.35" />
+          <Stop offset="1" stopColor="#ffffff" stopOpacity="0" />
         </RadialGradient>
       </Defs>
-      <Circle cx="10" cy="10" r="9.5" fill="url(#pearl-body)" />
+      <Circle cx="10" cy="10" r="9.5" fill="url(#pearl-nacre)" />
+      <Circle cx="10" cy="10" r="9.5" fill="url(#pearl-shine)" />
     </Svg>
   );
 }
@@ -101,16 +109,21 @@ export function PearlRewardBadge(props: {
     <View className="mt-1">
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Estimated Pearl reward: ${formatGrains(reward.grains)} grains`}
+        accessibilityLabel={`Estimated reward: ${formatGrains(reward.grains)} grains, about ${formatSmallUsd(reward.usd)}`}
         accessibilityState={{ expanded }}
         hitSlop={6}
         onPress={() => setExpanded((open) => !open)}
         className="min-h-7 flex-row items-center gap-1.5 self-start rounded-full px-1.5"
       >
-        <PearlDot size={11} />
-        <Text className="font-t3-medium text-xs tabular-nums text-foreground-secondary">
-          {formatGrains(reward.grains)} grains
-          {reward.durationMs !== null ? ` · ${formatDuration(reward.durationMs)}` : ""}
+        <PearlDot size={14} />
+        <Text className="font-t3-medium text-xs tabular-nums text-foreground">
+          {formatGrains(reward.grains)} grains{" "}
+          <Text className="text-foreground-secondary" style={{ opacity: 0.75 }}>
+            {formatSmallUsd(reward.usd)}
+          </Text>
+          <Text className="text-foreground-secondary">
+            {reward.durationMs !== null ? ` · ${formatDuration(reward.durationMs)}` : ""}
+          </Text>
         </Text>
       </Pressable>
       {expanded ? (

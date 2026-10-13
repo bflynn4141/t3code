@@ -9,10 +9,10 @@ import {
 
 describe("SidebarStageBackdrop", () => {
   it("resolves stage artwork only when enabled", () => {
-    expect(resolveSidebarStageBackdropVariant("Dev")).toBe("dev");
+    expect(resolveSidebarStageBackdropVariant("Dev")).toBe("shucks");
     expect(resolveSidebarStageBackdropVariant("Nightly")).toBe("nightly");
     expect(resolveSidebarStageBackdropVariant("Dev", false)).toBeNull();
-    expect(resolveSidebarStageBackdropVariant("Alpha")).toBeNull();
+    expect(resolveSidebarStageBackdropVariant("Alpha")).toBe("shucks");
   });
 
   it("resolves supported environment pill labels", () => {
@@ -22,7 +22,7 @@ describe("SidebarStageBackdrop", () => {
     expect(resolveEnvironmentIdentificationPillLabel("Alpha")).toBeNull();
   });
 
-  it.each(["nightly", "dev"] as const)(
+  it.each(["nightly", "shucks"] as const)(
     "uses unique SVG definition ids when %s artwork is rendered more than once",
     (variant) => {
       const markup = renderToStaticMarkup(
